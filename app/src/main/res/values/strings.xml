@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GU Violin App</string>
+    <string name="name">Name</string>
+    <string name="learn_sheet_music">Learn Sheet Music</string>
+    <string name="welcome">Welcome!</string>
+    <string name="please_enter_your_name">Please enter your name</string>
+    <string name="start">Start</string>
+    <string name="submit">SUBMIT</string>
+    <string name="image">image</string>
+
+</resources>
