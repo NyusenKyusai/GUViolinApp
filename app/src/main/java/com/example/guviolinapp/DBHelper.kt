@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 1) {
 
+    private lateinit var db: SQLiteDatabase
+
     companion object{
         //Companion object that holds the name of everything in the database
         private val DATABASE_NAME = "violininfo.db"
@@ -30,15 +32,17 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     //On create of the Application creating the actual database in the device
     override fun onCreate(db: SQLiteDatabase) {
+        this.db = db
+
         //Variable that holds the SQL query to create the table
         val CREATE_GAME_TABLE =
-                "CREATE TABLE IF NOT EXISTS $GAME_TABLE" +
+                "CREATE TABLE IF NOT EXISTS ${GAME_TABLE}" +
                 "($COL_GAME_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$COL_GAME_SCORE INTEGER" +
                 ")"
         //Variable that holds the SQL query to create the table
         val CREATE_QUESTION_TABLE =
-                "CREATE TABLE $QUESTION_TABLE" +
+                "CREATE TABLE ${QUESTION_TABLE}" +
                 "($COL_QUIZ_LEVEL INTEGER, " +
                 "$COL_QUESTION_NUM INTEGER, " +
                 "$COL_QUIZ_QUESTION TEXT, " +
@@ -47,21 +51,21 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 "$COL_QUIZ_OPTION_TWO TEXT , " +
                 "$COL_QUIZ_OPTION_THREE TEXT, " +
                 "$COL_QUIZ_OPTION_FOUR TEXT, " +
-                "$COL_QUIZ_ANSWER INTEGER" +
+                "$COL_QUIZ_ANSWER INTEGER, " +
                 "PRIMARY KEY ($COL_QUIZ_LEVEL, $COL_QUESTION_NUM)" +
                 ")"
         //Variable that holds the SQL query to create the table
         val CREATE_SCORE_TABLE =
-                "CREATE TABLE $SCORE_TABLE" +
+                "CREATE TABLE ${SCORE_TABLE}" +
                 "($COL_SCORE_LEVEL INTEGER PRIMARY KEY, " +
-                "$COL_QUIZ_SCORE INTEGER" +
-                "FOREIGN KEY $COL_SCORE_LEVEL REFERENCES $QUESTION_TABLE($COL_QUIZ_LEVEL) ON DELETE CASCADE" +
+                "$COL_QUIZ_SCORE INTEGER, " +
+                "FOREIGN KEY ($COL_SCORE_LEVEL) REFERENCES $QUESTION_TABLE($COL_QUIZ_LEVEL) ON DELETE CASCADE" +
                 ")"
 
         //Functions that execute the sql script. The first one prevents null in the db
-        //db.execSQL("CREATE TABLE $QUESTION_TABLE($COL_QUIZ_LEVEL INTEGER, $COL_QUESTION_NUM INTEGER, $COL_QUIZ_QUESTION TEXT, $COL_IMAGE_PATH TEXT, $COL_QUIZ_OPTION_ONE TEXT, $COL_QUIZ_OPTION_TWO TEXT , $COL_QUIZ_OPTION_THREE TEXT, $COL_QUIZ_OPTION_FOUR TEXT, $COL_QUIZ_ANSWER INTEGER, PRIMARY KEY ($COL_QUIZ_LEVEL, $COL_QUESTION_NUM))")
-        db.execSQL("CREATE TABLE $GAME_TABLE($COL_GAME_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, $COL_GAME_SCORE INTEGER)")
-        db.execSQL("CREATE TABLE $SCORE_TABLE($COL_SCORE_LEVEL INTEGER PRIMARY KEY, $COL_QUIZ_SCORE INTEGER, FOREIGN KEY ($COL_SCORE_LEVEL) REFERENCES $QUESTION_TABLE($COL_QUIZ_LEVEL) ON DELETE CASCADE)")
+        db.execSQL(CREATE_QUESTION_TABLE)
+        db.execSQL(CREATE_GAME_TABLE)
+        db.execSQL(CREATE_SCORE_TABLE)
         fillQuestionsTable()
     }
 
@@ -86,8 +90,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     //Function to insert values into the Score table
     fun insertScoreTable(quizLevel: Int, quizScore: Int): Boolean? {
-        //Creates the writable database that can be accessed
-        val db = this.writableDatabase
         //Function to insert values that will be inserted into the database
         val cv = ContentValues()
         //Inserting the values with a specific identifier in which the value needs to be inserted
@@ -100,8 +102,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     //Function to insert values into the Game table
     fun insertGameTable(gameNum: Int, gameScore: Int): Boolean? {
-        //Creates the writable database that can be accessed
-        val db = this.writableDatabase
         //Function to insert values that will be inserted into the database
         val cv = ContentValues()
         //Inserting the values with a specific identifier in which the value needs to be inserted
@@ -113,9 +113,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
 
     //Function to insert values into the Questions table
-    private fun insertQuestionsTable(questionTable: QuestionsTable) {
-        //Creates the writable database that can be accessed
-        val db = this.writableDatabase
+    private fun insertQuestionsTable(questionTable: QuestionsTable): Boolean? {
         //Function to insert values that will be inserted into the database
         val cv = ContentValues()
         //Inserting the values with a specific identifier in which the value needs to be inserted
@@ -130,7 +128,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         cv.put(COL_QUIZ_ANSWER, questionTable.quiz_answer)
         //Executing the actual insert database
         val res = db.insert(QUESTION_TABLE, null, cv)
-        //return !res.equals(-1)
+        return !res.equals(-1)
     }
 
     //Function to insert all the questions into the database
@@ -369,7 +367,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     fun getAllQuestions(): ArrayList<QuestionsTable> {
         //Creating the ArrayList that holds the questions retrieved from the database
         val rv = ArrayList<QuestionsTable>()
-        val db = this.writableDatabase
         //Query that gets the values from the database
         val csr = db.query(QUESTION_TABLE,null /* ALL columns */,null,null,null,null,null)
 
@@ -404,7 +401,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     fun getAllScores(): ArrayList<ScoreTable> {
         //Creating the ArrayList that holds the questions retrieved from the database
         val rv = ArrayList<ScoreTable>()
-        val db = this.writableDatabase
         //While loop that insert the values into the array list while there is a next value
         val csr = db.query(SCORE_TABLE,null /* ALL columns */,null,null,null,null,null)
 
@@ -431,7 +427,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     fun getAllGameScores(): ArrayList<GameTable> {
         //Creating the ArrayList that holds the questions retrieved from the database
         val rv = ArrayList<GameTable>()
-        val db = this.writableDatabase
         //While loop that insert the values into the array list while there is a next value
         val csr = db.query(GAME_TABLE,null /* ALL columns */,null,null,null,null,null)
 
