@@ -9,7 +9,7 @@ class QuizQuestionsActivity : AppCompatActivity() {
 
     //Initialization of variables that will be used
     lateinit var myDb: DBHelper
-    private var mQuizLevel: String? = null
+    private var mQuizLevel: Int? = null
 
     //Setting the database variable and it's context
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,14 +17,16 @@ class QuizQuestionsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_quiz_questions)
 
         //Receiving the extra information from the Intent
-        mQuizLevel = intent.getStringExtra("LevelInformation")
+        mQuizLevel = intent.getIntExtra("LevelInformation", 1)
 
         myDb = DBHelper(this)
 
-        val questionList = myDb.getAllQuestions()
+        val questionList = myDb.getLevelQuestions(mQuizLevel!!)
 
-        val tvOptionOne = findViewById<TextView>(R.id.tvOptionOne)
+        //val tvOptionOne = findViewById<TextView>(R.id.tvOptionOne)
 
-        Log.d("Database Query",questionList.toString())
+        Log.w("Database Query",questionList.toString())
+
+
     }
 }

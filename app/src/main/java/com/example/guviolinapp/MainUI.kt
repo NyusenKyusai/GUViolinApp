@@ -22,28 +22,28 @@ class MainUI : AppCompatActivity() {
         btnLevel1.setOnClickListener{
             val intent = Intent(this, QuizQuestionsActivity::class.java)
             //Creating a message to determine what questions will appear in the next activity
-            intent.putExtra("LevelInformation", "Level1")
+            intent.putExtra("LevelInformation", 1)
             startActivity(intent)
             finish()
         }
 
         btnLevel2.setOnClickListener {
             val intent = Intent(this, QuizQuestionsActivity::class.java)
-            intent.putExtra("LevelInformation", "Level2")
+            intent.putExtra("LevelInformation", 2)
             startActivity(intent)
             finish()
         }
 
         btnLevel3.setOnClickListener {
             val intent = Intent(this, QuizQuestionsActivity::class.java)
-            intent.putExtra("LevelInformation", "Level3")
+            intent.putExtra("LevelInformation", 3)
             startActivity(intent)
             finish()
         }
 
         btnGame1.setOnClickListener{
             val intent = Intent(this, QuizGameActivity::class.java)
-            intent.putExtra("GameInformation", "Game1")
+            intent.putExtra("GameInformation", 1)
             startActivity(intent)
             finish()
         }
