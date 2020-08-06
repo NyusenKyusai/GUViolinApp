@@ -21,7 +21,6 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var mCorrectAnswers: Int = 0
     private var mQuizLevel: Int? = null
 
-    //Setting the database variable and it's context
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
@@ -141,6 +140,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                             //Putting extra values into the intent that will be needed in the result page
                             intent.putExtra("Correct Answers", mCorrectAnswers)
                             intent.putExtra("Total Question", mQuestionList!!.size)
+                            intent.putExtra("Quiz Level", mQuizLevel)
                             //Starting the new activity
                             startActivity(intent)
                             //Closing this activity

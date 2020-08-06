@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
                 //Toast to prompt the user/ input validation
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
             } else {
+                //Function to save the name
+                saveUsername(etName.text.toString())
                 //creating an intent to start the next activity and then close this activity to conserve memory
                 val intent = Intent(this, MainUI::class.java)
                 startActivity(intent)
@@ -52,5 +54,16 @@ class MainActivity : AppCompatActivity() {
             editor.putString("firstInstall", "False")
             editor.apply()
         }
+    }
+
+    //This function saves the name the user inputs into shared preferences
+    private fun saveUsername(username: String) {
+        //Functions that takes the shared preferences location
+        val sharedPrefs = getSharedPreferences("SAVE_USERNAME", Context.MODE_PRIVATE)
+        //Editor for shared preferences
+        var editor = sharedPrefs.edit()
+        //Puts the username into the shared preferences location using the key Username as well as applying the change
+        editor.putString("Username", username)
+        editor.apply()
     }
 }
